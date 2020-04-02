@@ -3,33 +3,30 @@
 <head>
 
 	<style>
-		body {background-color: #71F79F;}
+		body {background-color: black;}
 		h1{
-			font-family: "Courier New", Courier, monospace;
+			font-family: Georgia, serif;
 			font-weight: bold;
 			font-stretch: extra-expanded;
 			text-align: center;
-			background-color: #3DD6D0;
-			color: #513C2C;
+			color: white;
 		}
 		form{
   			margin: auto;
   			position: relative;
-  			width: 300px;
-  			height: 300px;
-  			font-family: Tahoma, Geneva, sans-serif;
+  			font-family:  "Courier New", Courier, monospace;
   			font-size: 20px;
   			line-height: 24px;
   			font-weight: bold;
-  			color: #B0D0D3;
+  			color: white;
   			text-align: center;
 		}
     input[type=submit] {
         background-color: #15B097;
         border: none;
-        color: #513C2C;
+        color: white;
         font-size:20px;
-        padding: 16px 32px;
+        padding: 8px 20px;
         text-decoration: none;
         margin: 4px 2px;
         cursor: pointer;
@@ -37,17 +34,23 @@
 		
 	</style>
 
-
-    <title>Search Term Opinions</title>
+  <title>Search Term Opinions</title>
     
-    <h1>Get Regional Opinions!</h1>
-  </head>
-
+</head>
+<body>
 <form method="POST">
-  <input type="text" id="searchTerm" name="searchTerm"><br>
-  <br>
-  <input type="submit" value="Submit">
-
+  <p>Twitter opinions on the following search term:
+  <input type="text" id="searchTerm" name="searchTerm"> </p>
+  <p> for the past ...
+  <input type="radio" id="day" name="time" value="day" checked>
+  <label for="day">day</label><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="radio" id="month" name="time" value="month">
+  <label for="month">30 days</label><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="radio" id="year" name="time" value="year">
+  <label for="year">year</label> </p>
+  <input type="submit" value="Search">
 </form>
 
 </body>

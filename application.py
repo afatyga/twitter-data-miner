@@ -13,11 +13,20 @@ def root():
 def post():
 	searchTerm = request.form['searchTerm'] #getting usernames
 	print(searchTerm)
-	terms = searchTerms.getMsgs(searchTerm)
-	print('Terms ', terms)
+	timeStr = request.form['time'] #getting time period
+	time = 0
+	if (timeStr == "day"): 
+		time = 1
+	elif(timeStr == "month"): 
+		time = 30
+	elif(timeStr == "year"): 
+		time = 365
+	print(time)
+	terms = searchTerms.startUp(searchTerm, time)
+#	print('Terms ', terms)
 	return render_template('main.html')
 
 
 if __name__ == '__main__':
 	application.run()
-#    application.run(host = '0.0.0.0', port = 8080)
+#    application.run(host = '0.0.0.0', port = 8080) for aws
