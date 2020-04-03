@@ -2,7 +2,9 @@ import keys #holds the keys for using tweepy
 import tweepy #twitter api
 from threading import Thread #threading stuff
 from geopy.geocoders import Nominatim
-import json 
+import json
+from textblob import TextBlob
+import re
 
 numTweets = 30
 import datetime
@@ -50,7 +52,7 @@ def getMsgs(searchTerm, time):
 					geolocator = Nominatim(user_agent="Data Mining1")
 					location = geolocator.geocode(loc)
 				
-					statusLocList = [status.text, location.latitude,location.longitude]
+					statusLocList = [get_tweet_sentiment(status.text), location.latitude,location.longitude]
 					listOfLinks.append(statusLocList)
 
 				except(AttributeError):
@@ -66,3 +68,24 @@ def startUp(searchTerm, time):
 	geoLocList = getMsgs(searchTerm, time) 
 	return geoLocList
 
+def clean_tweet(tweetText): 
+        ''' 
+        Utility function to clean tweet text by removing links, special characters 
+        using simple regex statements. 
+        '''
+        return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweetText).split())
+
+def get_tweet_sentiment(tweetText): 
+    ''' 
+    Utility function to classify sentiment of passed tweet 
+    using textblob's sentiment method 
+    '''
+    # create TextBlob object of passed tweet text
+    analysis = TextBlob(clean_tweet(tweetText))
+    # set sentiment 
+    if analysis.sentiment.polarity > 0: 
+        return 'positive'
+    elif analysis.sentiment.polarity == 0: 
+        return 'neutral'
+    else: 
+        return 'negative'
