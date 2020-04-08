@@ -6,7 +6,7 @@ import json
 from textblob import TextBlob
 import re
 
-numTweets = 30
+numTweets = 20
 import datetime
 # datetime object containing current date and time
 
@@ -58,7 +58,8 @@ def getMsgs(searchTerm, time):
 				except(AttributeError):
 					pass
 
-		print(len(listOfLinks))
+		print(listOfLinks)
+#		print(len(listOfLinks))
 		return listOfLinks # a success
 	except (tweepy.TweepError):
 		return [] #means the username was not valid!
