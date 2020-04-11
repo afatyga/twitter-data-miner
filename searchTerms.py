@@ -5,10 +5,15 @@ from geopy.geocoders import Nominatim
 import json
 from textblob import TextBlob
 import re
+import os #to get pid id
 
-numTweets = 20
+
+numTweets = 500
 import datetime
 # datetime object containing current date and time
+import requests
+
+GOOGLE_MAPS_API_URL = 'http://maps.googleapis.com/maps/api/geocode/json'
 
 
 def getMsgs(searchTerm, time):
@@ -21,7 +26,17 @@ def getMsgs(searchTerm, time):
 		with open('backupTweets.json') as json_file:
 		    data = json.load(json_file)
 		    for tweets in data['tweets']:
-		    	listOfLinks.append((str(tweets['text']),0))
+		    	
+		    	try:
+		    		loc = str(tweets['location'])
+		    		agent = "dataMining" + str(os.getpid())
+		    		geolocator = Nominatim(user_agent=agent, timeout=3)
+		    		location = geolocator.geocode(loc)
+		    		statusLocList = [get_tweet_sentiment(str(tweets['text'])), location.latitude,location.longitude]
+		    		listOfLinks.append(statusLocList)
+
+		    	except(AttributeError):
+		    		pass
 
 		return listOfLinks
 
@@ -36,6 +51,7 @@ def getMsgs(searchTerm, time):
 	if (time == 1): newdate = datetime.datetime.now() - datetime.timedelta(days=1)
 	if (time == 30): newdate = datetime.datetime.now() - datetime.timedelta(days=30)
 	if (time == 365): newdate = datetime.datetime.now() - datetime.timedelta(days=365)
+	count = 0
 
 	try:	#will be an error if the username is not valid
 
@@ -49,16 +65,17 @@ def getMsgs(searchTerm, time):
 				loc = str(status._json['user']['location'])
 		#	listOfLinks.append([status.text, ])
 				try:
-					geolocator = Nominatim(user_agent="Data Mining1")
+					agent = "dataMining" + str(os.getpid())
+					geolocator = Nominatim(user_agent=agent, timeout=3)
 					location = geolocator.geocode(loc)
-				
+				#	count += count	
 					statusLocList = [get_tweet_sentiment(status.text), location.latitude,location.longitude]
 					listOfLinks.append(statusLocList)
 
 				except(AttributeError):
 					pass
 
-		print(listOfLinks)
+#		print(listOfLinks)
 #		print(len(listOfLinks))
 		return listOfLinks # a success
 	except (tweepy.TweepError):
@@ -90,3 +107,4 @@ def get_tweet_sentiment(tweetText):
         return 'neutral'
     else: 
         return 'negative'
+
