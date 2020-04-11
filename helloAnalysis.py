@@ -1,5 +1,6 @@
 import re 
 import tweepy 
+import keys
 from tweepy import OAuthHandler 
 from textblob import TextBlob
 from threading import Thread #threading stuff
@@ -32,7 +33,12 @@ def get_tweet_sentiment(tweet):
 
 def main():
     # creating object of TwitterClient Class 
-    api = TwitterClient()
+    #fixing file to stop errors -alex
+    auth = tweepy.OAuthHandler(keys.consumer_key, keys.consumer_secret) #using key from keys file - blank in github
+    auth.set_access_token(keys.access_token, keys.access_secret)
+
+    api = tweepy.API(auth)
+    #api = TwitterClient()
     # calling function to get tweets 
     tweets = api.get_tweets(query = 'Donald Trump', count = 200) 
   
