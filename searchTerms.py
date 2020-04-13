@@ -11,9 +11,6 @@ import os #to get pid id
 numTweets = 500
 import datetime
 # datetime object containing current date and time
-import requests
-
-GOOGLE_MAPS_API_URL = 'http://maps.googleapis.com/maps/api/geocode/json'
 
 
 def getMsgs(searchTerm, time):
@@ -32,7 +29,7 @@ def getMsgs(searchTerm, time):
 		    		agent = "dataMining" + str(os.getpid())
 		    		geolocator = Nominatim(user_agent=agent, timeout=3)
 		    		location = geolocator.geocode(loc)
-		    		statusLocList = [get_tweet_sentiment(str(tweets['text'])), location.latitude,location.longitude]
+		    		statusLocList = [get_tweet_sentiment(str(tweets['text'])), location.latitude,location.longitude, loc]
 		    		listOfLinks.append(statusLocList)
 
 		    	except(AttributeError):
@@ -47,35 +44,27 @@ def getMsgs(searchTerm, time):
 	api = tweepy.API(auth)
 	listOfLinks = []
 
-	newdate = datetime.datetime.now()
-	if (time == 1): newdate = datetime.datetime.now() - datetime.timedelta(days=1)
-	if (time == 30): newdate = datetime.datetime.now() - datetime.timedelta(days=30)
-	if (time == 365): newdate = datetime.datetime.now() - datetime.timedelta(days=365)
-	count = 0
+	newdate = datetime.datetime.now() - datetime.timedelta(days=time)
 
 	try:	#will be an error if the username is not valid
 
 		for status in tweepy.Cursor(api.search, q=searchTerm).items(numTweets): 
-#			print(now)
-#			print(status.created_at)
-#			print(abs(status.created_at - now))
 
 
 			if (status.created_at > newdate):
 				loc = str(status._json['user']['location'])
-		#	listOfLinks.append([status.text, ])
 				try:
 					agent = "dataMining" + str(os.getpid())
 					geolocator = Nominatim(user_agent=agent, timeout=3)
 					location = geolocator.geocode(loc)
 				#	count += count	
-					statusLocList = [get_tweet_sentiment(status.text), location.latitude,location.longitude]
+					statusLocList = [get_tweet_sentiment(status.text), location.latitude,location.longitude, loc]
 					listOfLinks.append(statusLocList)
 
 				except(AttributeError):
 					pass
 
-#		print(listOfLinks)
+		print(listOfLinks)
 #		print(len(listOfLinks))
 		return listOfLinks # a success
 	except (tweepy.TweepError):

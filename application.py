@@ -4,13 +4,6 @@ import os
 import searchTerms
 import xlsxwriter
 
-# Create a workbook and add a worksheet.
-workbook = xlsxwriter.Workbook('report.xlsx')
-worksheet = workbook.add_worksheet()
-worksheet.write(0, 0, 'Area')
-worksheet.write(0, 1, 'Sentiment')
-
-
 
 application = Flask(__name__)
 
@@ -20,9 +13,20 @@ def root():
 
 @application.route('/', methods=['POST']) #creates the flask html route
 def post():
+
 	if request.form['action'] == 'Search':
 		searchTerm = request.form['searchTerm'] #getting usernames
 		print(searchTerm)
+
+		global reportName
+		reportName = str(searchTerm) + ".xlsx"
+
+		# Create a workbook and add a worksheet.
+		workbook = xlsxwriter.Workbook(reportName)
+		worksheet = workbook.add_worksheet()
+		worksheet.write(0, 0, 'Area')
+		worksheet.write(0, 1, 'Sentiment')
+
 		timeStr = request.form['time'] #getting time period
 		time = 0
 		if (timeStr == "day"): 
@@ -31,17 +35,23 @@ def post():
 			time = 30
 		elif(timeStr == "year"): 
 			time = 365
-		print(time)
-		terms = searchTerms.startUp(searchTerm, time)
+#		print(time)
 
-		print('Terms ', terms)
+		terms = searchTerms.getMsgs(searchTerm, time)
+		rowNum = 1
+		for t in terms: #adding to excel file
+
+			worksheet.write(rowNum, 0, t[3])
+			worksheet.write(rowNum, 1, t[0])
+			rowNum = rowNum + 1
+		workbook.close() #closing excel file
+
+#		print('Terms ', terms)
 		return render_template('main.html', butOn = 1)
 
-	elif request.form['action'] == 'Export':
-		workbook.close()
-		return send_file('report.xlsx', mimetype ='application/vnd.ms-excel', attachment_filename = 'report.xlsx', as_attachment=True)
-
-		#return render_template('main.html', butOn = 1)
+	if request.form['action'] == 'Export':
+		
+		return send_file(reportName, mimetype ='application/vnd.ms-excel', attachment_filename = reportName, as_attachment=True)
 
 
 

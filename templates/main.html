@@ -31,6 +31,7 @@
         margin: 4px 2px;
         cursor: pointer;
     }
+   
 		
 	</style>
 
@@ -40,7 +41,15 @@
 <body>
 <form method="POST" action ="">
   <p>Twitter opinions on the following search term:
-  <input type="text" id="searchTerm" name="searchTerm"> </p>
+  <input type="text" id="searchTerm" name="searchTerm"> 
+&nbsp;&nbsp;&nbsp;&nbsp;  
+<font color="blue">Positive</font> 
+<font color="yellow">Neutral</font> 
+
+<font color="red">Negative</font> </p>
+
+
+
   <p> for the past ...
   <input type="radio" id="day" name="time" value="day" checked>
   <label for="day">day</label><br>
@@ -64,51 +73,6 @@
   }
 
 </script>
-
-   <div id="map"></div>
-
-    <!-- This script is to display the location of the device on google map -->
-    <script>
-      var map, infoWindow;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 42.36, lng: -71.06}, // This location is the initial location before it gets the data from the device's location
-            zoom: 15
-        });
-        infoWindow = new google.maps.InfoWindow;
-
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) { // get the data of longitude and latitude of the device
-            var pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-            
-            infoWindow.setPosition(pos);
-            infoWindow.setContent('This is You.');
-            infoWindow.open(map);
-            map.setCenter(pos);
-          }, function() {
-                LocationError(true, infoWindow, map.getCenter());
-          });
-        } else {
-            LocationError(false, infoWindow, map.getCenter()); // If it fails to get the location data, LocationError function
-        }
-      }
-
-      function LocationError(browserHasGeolocation, infoWindow, pos) {
-        infoWindow.setPosition(pos);
-        infoWindow.setContent(browserHasGeolocation ?
-                              'Error: The Geolocation service failed.' :
-                              'Error: Your browser doesn\'t support geolocation.');
-        infoWindow.open(map);
-      }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBV9T5a1zm_lss2n2lTwzwFeSi3Idc_1Dg&callback=initMap">
-    </script>
-
-
 
 </body>
 </html>
