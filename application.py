@@ -44,10 +44,10 @@ def post():
 			worksheet.write(rowNum, 0, t[3])
 			worksheet.write(rowNum, 1, t[0])
 			rowNum = rowNum + 1
-		workbook.close() #closing excel file
+			workbook.close() #closing excel file
 
-#		print('Terms ', terms)
-		return render_template('main.html', butOn = 1)
+	
+		return render_template('main.html', butOn = 1, locations = terms, )
 
 	if request.form['action'] == 'Export':
 		
