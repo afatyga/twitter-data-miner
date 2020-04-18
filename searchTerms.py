@@ -7,8 +7,8 @@ from textblob import TextBlob
 import re
 import os #to get pid id
 
+numTweets = 1000
 
-numTweets = 500
 import datetime
 # datetime object containing current date and time
 
