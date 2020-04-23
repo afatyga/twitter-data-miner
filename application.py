@@ -12,7 +12,7 @@ application = Flask(__name__)
 def root():
 	os.system("del /q Export\*")#windows
 	os.system("rm  Export/*")    #mac/linux
-	return render_template('main.html', butOn = 0)
+	return render_template('main.html', butOn = 0, loc_cords = [])
 
 @application.route('/', methods=['POST']) #creates the flask html route
 def post():
@@ -48,8 +48,8 @@ def post():
 		sentiment = []
 		rowNum = 1
 		for t in terms: #adding to excel file
-			cords.append(t[1])
-			cords.append(t[2])
+			cords.append(float(t[1]))
+			cords.append(float(t[2]))
 			sentiment.append(t[0])
 			worksheet.write(rowNum, 0, t[3])
 			worksheet.write(rowNum, 1, t[0])
@@ -58,7 +58,7 @@ def post():
 		
 		
 		print(cords)
-		return render_template('main.html', butOn = 1, loc_cords = json.dumps(cords), sent_list = json.dumps(sentiment),)
+		return render_template('main.html', butOn = 1, loc_cords = (cords), sent_list = (sentiment),)
 
 	if request.form['action'] == 'Export':
 		zipFolder = zipfile.ZipFile('data.zip','w', zipfile.ZIP_DEFLATED) #making the zip and sending it to the user!!!
