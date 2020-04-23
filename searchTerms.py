@@ -64,8 +64,6 @@ def getMsgs(searchTerm, time):
 				except(AttributeError):
 					pass
 
-		print(listOfLinks)
-#		print(len(listOfLinks))
 		return listOfLinks # a success
 	except (tweepy.TweepError):
 		return [] #means the username was not valid!
@@ -91,9 +89,9 @@ def get_tweet_sentiment(tweetText):
     analysis = TextBlob(clean_tweet(tweetText))
     # set sentiment 
     if analysis.sentiment.polarity > 0: 
-        return 'positive'
+        return 1
     elif analysis.sentiment.polarity == 0: 
-        return 'neutral'
+        return 2
     else: 
-        return 'negative'
+        return 3
 
