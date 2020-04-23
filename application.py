@@ -12,6 +12,8 @@ application = Flask(__name__)
 def root():
 	os.system("del /q Export\*")#windows
 	os.system("rm  Export/*")    #mac/linux
+	os.system("rm data.zip")
+	os.system("del data.zip")
 	return render_template('main.html', butOn = 0, loc_cords = [])
 
 @application.route('/', methods=['POST']) #creates the flask html route
@@ -20,11 +22,8 @@ def post():
 	
 	if request.form['action'] == 'Search':
 		searchTerm = request.form['searchTerm'] #getting usernames
-		print(searchTerm)
 		timeStr = request.form['time'] #getting time period
 
-
-		global reportName
 		reportName = "Export/" + str(searchTerm) + "_" + str(timeStr) + ".xlsx"
 
 		# Create a workbook and add a worksheet.
@@ -48,16 +47,20 @@ def post():
 		sentiment = []
 		rowNum = 1
 		for t in terms: #adding to excel file
+			print(t)
 			cords.append(float(t[1]))
 			cords.append(float(t[2]))
 			sentiment.append(t[0])
+			sentimentStr = ""
+			if (t[0] == 1): sentimentStr = "positive"
+			if (t[0] == 2): sentimentStr = "neutral"
+			if (t[0] == 3): sentimentStr = "negative"
 			worksheet.write(rowNum, 0, t[3])
-			worksheet.write(rowNum, 1, t[0])
+			worksheet.write(rowNum, 1, sentimentStr)
 			rowNum = rowNum + 1
-			workbook.close() #closing excel file
+		workbook.close() #closing excel file
 		
 		
-		print(cords)
 		return render_template('main.html', butOn = 1, loc_cords = (cords), sent_list = (sentiment),)
 
 	if request.form['action'] == 'Export':
