@@ -4,12 +4,15 @@ import os
 import searchTerms
 import xlsxwriter
 import json
+import zipfile
 
 application = Flask(__name__)
 
 @application.route('/') #creates the flask html route
 def root():
-    return render_template('main.html', butOn = 0)
+	os.system("del /q Export\*")#windows
+	os.system("rm  Export/*")    #mac/linux
+	return render_template('main.html', butOn = 0)
 
 @application.route('/', methods=['POST']) #creates the flask html route
 def post():
@@ -18,9 +21,11 @@ def post():
 	if request.form['action'] == 'Search':
 		searchTerm = request.form['searchTerm'] #getting usernames
 		print(searchTerm)
+		timeStr = request.form['time'] #getting time period
+
 
 		global reportName
-		reportName = str(searchTerm) + ".xlsx"
+		reportName = "Export/" + str(searchTerm) + "_" + str(timeStr) + ".xlsx"
 
 		# Create a workbook and add a worksheet.
 		workbook = xlsxwriter.Workbook(reportName)
@@ -28,7 +33,6 @@ def post():
 		worksheet.write(0, 0, 'Area')
 		worksheet.write(0, 1, 'Sentiment')
 
-		timeStr = request.form['time'] #getting time period
 		time = 0
 		if (timeStr == "day"): 
 			time = 1
@@ -57,9 +61,12 @@ def post():
 		return render_template('main.html', butOn = 1, loc_cords = json.dumps(cords), sent_list = json.dumps(sentiment),)
 
 	if request.form['action'] == 'Export':
-		
-		return send_file(reportName, mimetype ='application/vnd.ms-excel', attachment_filename = reportName, as_attachment=True)
-
+		zipFolder = zipfile.ZipFile('data.zip','w', zipfile.ZIP_DEFLATED) #making the zip and sending it to the user!!!
+		for root, directs, files in os.walk('Export/'):
+			for f in files:
+				zipFolder.write('Export/' + str(f))
+		zipFolder.close()
+		return send_file('data.zip', mimetype ='zip', attachment_filename = 'data.zip', as_attachment=True)
 
 
 if __name__ == '__main__':
