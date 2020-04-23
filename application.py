@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, send_file
 import os
 import searchTerms
 import xlsxwriter
+import json
 import zipfile
 
 application = Flask(__name__)
@@ -16,6 +17,7 @@ def root():
 @application.route('/', methods=['POST']) #creates the flask html route
 def post():
 
+	
 	if request.form['action'] == 'Search':
 		searchTerm = request.form['searchTerm'] #getting usernames
 		print(searchTerm)
@@ -41,16 +43,22 @@ def post():
 #		print(time)
 
 		terms = searchTerms.getMsgs(searchTerm, time)
+		
+		cords = []
+		sentiment = []
 		rowNum = 1
 		for t in terms: #adding to excel file
-
+			cords.append(t[1])
+			cords.append(t[2])
+			sentiment.append(t[0])
 			worksheet.write(rowNum, 0, t[3])
 			worksheet.write(rowNum, 1, t[0])
 			rowNum = rowNum + 1
-		workbook.close() #closing excel file
-
-#		print('Terms ', terms)
-		return render_template('main.html', butOn = 1)
+			workbook.close() #closing excel file
+		
+		
+		print(cords)
+		return render_template('main.html', butOn = 1, loc_cords = json.dumps(cords), sent_list = json.dumps(sentiment),)
 
 	if request.form['action'] == 'Export':
 		zipFolder = zipfile.ZipFile('data.zip','w', zipfile.ZIP_DEFLATED) #making the zip and sending it to the user!!!
