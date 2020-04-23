@@ -7,6 +7,7 @@ Companies want to see how the US views their brand. They may want to compare opi
 
 # How To Use It
 - In terminal, run pip3 install -r requirements.txt
+- put in Twitter keys in keys.py
 - Then run python3 application.py
 - Go into your web browser and go onto 127.0.0.1:5000
 
