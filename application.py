@@ -12,6 +12,8 @@ application = Flask(__name__)
 def root():
 	os.system("del /q Export\*")#windows
 	os.system("rm  Export/*")    #mac/linux
+	os.system("rm data.zip")
+	os.system("del data.zip")
 	return render_template('main.html', butOn = 0, loc_cords = [])
 
 @application.route('/', methods=['POST']) #creates the flask html route
