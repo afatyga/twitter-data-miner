@@ -87,10 +87,12 @@
     <script>
      
       
-      var pydata = {{ loc_cords | tojson }};;
+      var pydata = {{ loc_cords | tojson }};
+      var feeling = {{sent_list}};
 
       console.log(pydata)
       console.log(pydata.length)
+      console.log(feeling);
       locations = [];
       latTrue =1
       var lat = 0.0
@@ -117,10 +119,35 @@
           });
         });
 
+        
         var markerCluster = new MarkerClusterer(map, markers,
-            {imagePath: '/static/markers/m'});              
-        }
-                    
+            {imagePath: '/static/markers/m',
+            calculator: function(markers, numStyles) {
+              index = 1;
+              var red = 0;
+              var blue = 0;
+              var yellow = 0;
+              for (var i = 0; i < markers.length; i++) {
+                if (feeling[i] == 1) {
+                  blue++;
+             
+                } else if (feeling[i] == 2) {
+                  yellow++;
+                } else{
+                  red++;
+                 
+                }
+              }
+              max = Math.max(blue, yellow, red);
+
+              if (max == blue) index = 1;
+              if (max == yellow) index = 2;
+              if (max == red) index = 3;
+              if (red == blue) index = 2;
+              return {text:markers.length, index:index};
+            }
+          });
+      }
     </script> 
 
 </script>
