@@ -14,7 +14,7 @@ def root():
 	os.system("rm  Export/*")    #mac/linux
 	os.system("rm data.zip")
 	os.system("del data.zip")
-	return render_template('main.html', butOn = 0, loc_cords = [])
+	return render_template('main.html', butOn = 0, loc_cords = [],term ="",)
 
 @application.route('/', methods=['POST']) #creates the flask html route
 def post():
@@ -61,7 +61,7 @@ def post():
 		workbook.close() #closing excel file
 		
 		
-		return render_template('main.html', butOn = 1, loc_cords = (cords), sent_list = (sentiment),)
+		return render_template('main.html', butOn = 1, loc_cords = (cords), sent_list = (sentiment), term=searchTerm)
 
 	if request.form['action'] == 'Export':
 		zipFolder = zipfile.ZipFile('data.zip','w', zipfile.ZIP_DEFLATED) #making the zip and sending it to the user!!!

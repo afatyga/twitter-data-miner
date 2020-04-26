@@ -105,48 +105,83 @@
       }
 
       console.log(JSON.stringify(locations))
+    </script>
+
+    <script>
       function initMap() {
 
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 3,
           center: {lat: 28.024, lng: 140.887}
         });
+        if (locations != []){
 
-        var markers = locations.map(function(location, i) {
-          return new google.maps.Marker({
-            position: location,
-        
-          });
-        });
+          var markers = locations.map(function(location, i) {
+            feel = ""
+            var icon = {
+                url: "../res/sit_marron.png", // url
+                scaledSize: new google.maps.Size(50, 50), // scaled size
+                origin: new google.maps.Point(0,0), // origin
+                anchor: new google.maps.Point(0, 0) // anchor
+            };
+            var term = {{term | tojson}}
+            console.log(term)
+            //console.log( ({{term}}).toString() )
+            url = ""
 
-        
-        var markerCluster = new MarkerClusterer(map, markers,
-            {imagePath: '/static/markers/m',
-            calculator: function(markers, numStyles) {
-              index = 1;
-              var red = 0;
-              var blue = 0;
-              var yellow = 0;
-              for (var i = 0; i < markers.length; i++) {
-                if (feeling[i] == 1) {
-                  blue++;
-             
-                } else if (feeling[i] == 2) {
-                  yellow++;
-                } else{
-                  red++;
-                 
-                }
-              }
-              max = Math.max(blue, yellow, red);
-
-              if (max == blue) index = 1;
-              if (max == yellow) index = 2;
-              if (max == red) index = 3;
-              if (red == blue) index = 2;
-              return {text:markers.length, index:index};
+            if (feeling[i] == 1) {
+              feel = "Positive"
+              url = 'https://maps.google.com/mapfiles/ms/micons/blue.png'
             }
+            if (feeling[i] == 2){
+              feel = "Neutral"
+              url = 'https://maps.google.com/mapfiles/ms/micons/yellow.png'
+            }
+            if (feeling[i] == 3){ 
+              feel = "Negative"
+              url = 'https://maps.google.com/mapfiles/ms/micons/red.png'
+            }
+            img = ('/static/markers/m' + (feeling[i]).toString() + '.png')
+
+            console.log(feeling[i])
+            return new google.maps.Marker({
+              position: location,
+              title: feel,
+              icon: url,
+              size: 3
+          
+            });
           });
+
+          
+          var markerCluster = new MarkerClusterer(map, markers,
+              {imagePath: '/static/markers/m',
+              calculator: function(markers, numStyles) {
+                index = 1;
+                var red = 0;
+                var blue = 0;
+                var yellow = 0;
+                for (var i = 0; i < markers.length; i++) {
+                  if (feeling[i] == 1) {
+                    blue++;
+               
+                  } else if (feeling[i] == 2) {
+                    yellow++;
+                  } else{
+                    red++;
+                   
+                  }
+                }
+                max = Math.max(blue, yellow, red);
+
+                if (max == blue) index = 1;
+                if (max == yellow) index = 2;
+                if (max == red) index = 3;
+                if (red == blue) index = 2;
+                return {text:markers.length, index:index};
+              }
+            });
+        }
       }
     </script> 
 
