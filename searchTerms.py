@@ -1,9 +1,7 @@
 import keys #holds the keys for using tweepy
 import tweepy #twitter api
-from threading import Thread #threading stuff
 from geopy.geocoders import Nominatim
 import json
-from textblob import TextBlob
 import re, string
 import os #to get pid id
 
