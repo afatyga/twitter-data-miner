@@ -1,5 +1,5 @@
 tweepy==3.8.0
 Flask==1.0.2
 geopy==1.21.0
-textblob==0.15.3
+nltk==3.3
 XlsxWriter==1.2.8
