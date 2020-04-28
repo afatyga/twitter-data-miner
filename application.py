@@ -14,6 +14,7 @@ def root():
 	os.system("rm  Export/*")    #mac/linux
 	os.system("rm data.zip")
 	os.system("del data.zip")
+	searchTerms.calibrate()
 	return render_template('main.html', butOn = 0, loc_cords = [],term ="",)
 
 @application.route('/', methods=['POST']) #creates the flask html route
