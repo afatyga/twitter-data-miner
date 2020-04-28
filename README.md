@@ -18,6 +18,9 @@ We started by making a python script using Tweepy that can take in a search term
 Basic Web App to allow users to input a search term and decide how far back twitter will go (past day, past 30 days, past year). Sentiment analysis is run on these tweets and the latitude and longitude is determined using geolocation. Users can also export an excel file of this data. Separately, we were able to create a map that groups data points together with various different colored markers. Our next step is to put these 2 parts together.
 
 # Roles
-- Alex => Receiving input search term, creating list of lists holding longitutde, latitude and tweet, export output into an excel spreadsheet, AWS
+- Alex => Receiving input search term, geocoding, export output into an excel spreadsheet, AWS, improved sentiment analysis
 - Justin => Sentiment analysis, multiprocessing
-- Noah => Placing data points onto the map, grouping these data points together
+- Noah => Placing data points onto the map, grouping these data points together, data overlaying
+
+# Sources
+https://www.datacamp.com/community/tutorials/simplifying-sentiment-analysis-python
