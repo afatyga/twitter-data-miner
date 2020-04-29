@@ -10,11 +10,17 @@ global cords
 cords = []
 global cords2
 cords2 = []
+
 global sentiment, sentiment2
 sentiment = []
 sentiment2 = []
+
 global nextCords2Use
 nextCords2Use = 2
+
+global search1, search2
+search1 = ""
+search2 = ""
 
 application = Flask(__name__)
 
@@ -33,7 +39,7 @@ def post():
 	if request.form['action'] == 'Search':
 
 		global cords, cords2
-		global sentiment, sentiment2, nextCords2Use
+		global sentiment, sentiment2, nextCords2Use, search1, search2
 
 		searchTerm = request.form['searchTerm'] #getting usernames
 		timeStr = request.form.get('time') #getting time period
@@ -46,6 +52,8 @@ def post():
 			cords2 = []
 			sentiment = []
 			sentiment2 = []
+			search1 = ""
+			search2 = ""
 
 		#path
 		reportName = "Export/" + str(searchTerm) + "_" + str(timeStr) + ".xlsx"
@@ -92,30 +100,34 @@ def post():
 		if(overlay == None):
 			cords = tempCords
 			sentiment = tempSent
+			search1 = searchTerm
 			cords2 = []
 			sentiment2 = []
+			search2 = ""
 		elif (cords == [] and cords2 == []): 
 			cords = tempCords
 			sentiment = tempSent
+			search1 = searchTerm
 			nextCords2Use = 2
 		elif(cords2 == []):
 			cords2 = tempCords
 			sentiment2 = tempSent
+			search2 = searchTerm
 			nextCords2Use = 1
 		elif(nextCords2Use == 1):
 			cords = tempCords
 			sentiment = tempSent
+			search1 = searchTerm
 			nextCords2Use = 2
 		elif(nextCords2Use == 2):
 			cords2 = tempCords
 			sentiment2 = tempSent
+			search1 = searchTerm
 			nextCords2Use = 1
 
 		workbook.close() #closing excel file
-		print("cords at end")
-		print(cords)
-		print(cords2)
-		return render_template('main.html', butOn = 1, loc_cords = (cords), loc_cords2 = (cords2), sent_list = (sentiment), sent_list2 = (sentiment2), term=searchTerm)
+
+		return render_template('main.html', butOn = 1, loc_cords = (cords), loc_cords2 = (cords2), sent_list = (sentiment), sent_list2 = (sentiment2), search1 = search1, search2 = search2,)
 
 	if request.form['action'] == 'Export':
 		zipFolder = zipfile.ZipFile('data.zip','w', zipfile.ZIP_DEFLATED) #making the zip and sending it to the user!!!
