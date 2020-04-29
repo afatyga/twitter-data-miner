@@ -95,11 +95,10 @@
     <script>
      
       var pydata = {{ loc_cords | tojson }};
-      var feeling = {{sent_list}};
+      var pydata2 = {{ loc_cords2 | tojson }};
 
-      console.log(pydata)
-      console.log(pydata.length)
-      console.log(feeling);
+      var feeling = {{sent_list}};
+      set_list = [];
       locations = [];
       latTrue =1
       var lat = 0.0
@@ -112,19 +111,41 @@
     
       }
 
-      console.log(JSON.stringify(locations))
+      set_list.push(locations);
+
+      //check if there is a second set of data. Will be second set if overlay checked
+      locations2 = []
+      if (pydata2 != []) {
+        var feeling2 = {{sent_list2}};
+        for (i = 0; i < pydata2.length; i+= 2) {
+          locations2.push({
+            lat: parseFloat(pydata2[i]),
+            lng: parseFloat(pydata2[i + 1])
+            });
+        }
+        set_list.push(locations2)
+      }
+
     </script>
 
     <script>
       function initMap() {
 
+        //black marker text for set 1 and white for set 2; used to distinguish overlay
+        mark_colors = ["black", "white"];
+
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 3,
           center: {lat: 28.024, lng: 140.887}
         });
-        if (locations != []){
+       for (var k = 0; k < set_list.length; k++) {
+          temp_feel = feeling;
 
-          var markers = locations.map(function(location, i) {
+          if (k == 1) {
+            temp_feel = feeling2;
+          }
+
+          var markers = set_list[k].map(function(location, i) {
             feel = ""
             var icon = {
                 url: "../res/sit_marron.png", // url
@@ -137,21 +158,21 @@
             //console.log( ({{term}}).toString() )
             url = ""
 
-            if (feeling[i] == 1) {
+            if (temp_feel[i] == 1) {
               feel = "Positive"
               url = 'https://maps.google.com/mapfiles/ms/micons/blue.png'
             }
-            if (feeling[i] == 2){
+            if (temp_feel[i] == 2){
               feel = "Neutral"
               url = 'https://maps.google.com/mapfiles/ms/micons/yellow.png'
             }
-            if (feeling[i] == 3){ 
+            if (temp_feel[i] == 3){ 
               feel = "Negative"
               url = 'https://maps.google.com/mapfiles/ms/micons/red.png'
             }
-            img = ('/static/markers/m' + (feeling[i]).toString() + '.png')
+            img = ('/static/markers/m' + (temp_feel[i]).toString() + '.png')
 
-            console.log(feeling[i])
+            
             return new google.maps.Marker({
               position: location,
               title: feel,
@@ -171,10 +192,10 @@
                 var blue = 0;
                 var yellow = 0;
                 for (var i = 0; i < markers.length; i++) {
-                  if (feeling[i] == 1) {
+                  if (temp_feel[i] == 1) {
                     blue++;
                
-                  } else if (feeling[i] == 2) {
+                  } else if (temp_feel[i] == 2) {
                     yellow++;
                   } else{
                     red++;
@@ -190,6 +211,11 @@
                 return {text:markers.length, index:index};
               }
             });
+
+            markerCluster.setStyles(markerCluster.getStyles().map(function (style) {
+              style.textColor = mark_colors[k];
+              return style;
+            }));
         }
       }
     </script> 
