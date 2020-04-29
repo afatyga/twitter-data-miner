@@ -13,7 +13,7 @@ from nltk import FreqDist, classify, NaiveBayesClassifier
 
 import datetime
 global classifier
-numTweets = 1000
+numTweets = 10
 # datetime object containing current date and time
 
 import re, string, random
@@ -62,7 +62,7 @@ def getMsgs(searchTerm, time):
 					agent = "dataMining" + str(os.getpid())
 					geolocator = Nominatim(user_agent=agent, timeout=3)
 					location = geolocator.geocode(loc)
-					print(status.text)
+				#	print(status.text)
 				#	count += count	
 					statusLocList = [get_tweet_sentiment(status.text), location.latitude,location.longitude, loc]
 					listOfLinks.append(statusLocList)
@@ -79,7 +79,7 @@ def get_tweet_sentiment(tweetText):
     custom_tokens = remove_noise(word_tokenize(tweetText))
     global classifier
     sentiment = classifier.classify(dict([token, True] for token in custom_tokens))
-    print(sentiment)
+ #   print(sentiment)
     if (sentiment == "Positive"): 
     	return 1
     elif (sentiment == "Negative"):
