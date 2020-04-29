@@ -14,16 +14,17 @@ def root():
 	os.system("rm  Export/*")    #mac/linux
 	os.system("rm data.zip")
 	os.system("del data.zip")
-	searchTerms.calibrate()
+	#searchTerms.calibrate()
 	return render_template('main.html', butOn = 0, loc_cords = [],term ="",)
 
 @application.route('/', methods=['POST']) #creates the flask html route
 def post():
 
-	
 	if request.form['action'] == 'Search':
 		searchTerm = request.form['searchTerm'] #getting usernames
 		timeStr = request.form['time'] #getting time period
+		overlay = request.form['overlay']
+		if (overlay == "overlay"): print("yes")
 
 		reportName = "Export/" + str(searchTerm) + "_" + str(timeStr) + ".xlsx"
 
@@ -34,15 +35,19 @@ def post():
 		worksheet.write(0, 1, 'Sentiment')
 
 		time = 0
+		terms = []
 		if (timeStr == "day"): 
 			time = 1
+			terms = searchTerms.getMsgs(searchTerm, time)
 		elif(timeStr == "month"): 
 			time = 30
+			terms = searchTerms.getMsgs(searchTerm, time)
 		elif(timeStr == "year"): 
 			time = 365
-#		print(time)
+			terms = searchTerms.getMsgs(searchTerm, time)
+		elif(timeStr == "live"): #justin here is where you call the function 
+			print("AH")
 
-		terms = searchTerms.getMsgs(searchTerm, time)
 		
 		cords = []
 		sentiment = []
