@@ -36,7 +36,8 @@ def post():
 		global sentiment, sentiment2, nextCords2Use
 
 		searchTerm = request.form['searchTerm'] #getting usernames
-		timeStr = request.form['time'] #getting time period
+		timeStr = request.form.get('time') #getting time period
+		print(timeStr)
 		overlay = request.form.get('overlay')
 
 		print(overlay)

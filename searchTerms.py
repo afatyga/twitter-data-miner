@@ -13,7 +13,7 @@ from nltk import FreqDist, classify, NaiveBayesClassifier
 
 import datetime
 global classifier
-numTweets = 10
+numTweets = 1000
 # datetime object containing current date and time
 
 import re, string, random
