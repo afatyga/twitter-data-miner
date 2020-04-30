@@ -4,6 +4,7 @@ from geopy.geocoders import Nominatim
 import json
 import re, string
 import os #to get pid id
+import helloStreaming
 
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.corpus import twitter_samples, stopwords
@@ -13,10 +14,19 @@ from nltk import FreqDist, classify, NaiveBayesClassifier
 
 import datetime
 global classifier
-numTweets = 1000
+
+numTweets = 1000 #num of tweets to get from tweepy
 # datetime object containing current date and time
 
 import re, string, random
+
+def getLiveMsgs(searchTerm):
+    l = StdOutListener()
+    auth = tweepy.OAuthHandler(keys.consumer_key, keys.consumer_secret)
+    auth.set_access_token(keys.access_token, keys.access_secret)
+
+    stream = tweepy.Stream(auth, l)
+    stream.filter(track=[searchTerm])
 
 def getMsgs(searchTerm, time):
 	if not isinstance(searchTerm,str): #can only take in a string
@@ -26,19 +36,19 @@ def getMsgs(searchTerm, time):
 
 		listOfLinks  = []
 		with open('backupTweets.json') as json_file:
-		    data = json.load(json_file)
-		    for tweets in data['tweets']:
-		    	
-		    	try:
-		    		loc = str(tweets['location'])
-		    		agent = "dataMining" + str(os.getpid())
-		    		geolocator = Nominatim(user_agent=agent, timeout=3)
-		    		location = geolocator.geocode(loc)
-		    		statusLocList = [get_tweet_sentiment(str(tweets['text'])), location.latitude,location.longitude, loc]
-		    		listOfLinks.append(statusLocList)
+			data = json.load(json_file)
+			for tweets in data['tweets']:
+				try:
+					loc = str(tweets['location'])
+					if(loc != "None"):
+						agent = "dataMining" + str(os.getpid())
+						geolocator = Nominatim(user_agent=agent, timeout=3)
+						location = geolocator.geocode(loc)
+						statusLocList = [get_tweet_sentiment(str(tweets['text'])), location.latitude,location.longitude, loc]
+						listOfLinks.append(statusLocList)
 
-		    	except(AttributeError):
-		    		pass
+				except(AttributeError):
+					pass
 
 		return listOfLinks
 
@@ -55,21 +65,18 @@ def getMsgs(searchTerm, time):
 
 		for status in tweepy.Cursor(api.search, q=searchTerm).items(numTweets): 
 
-
-			if (status.created_at > newdate):
+			if (status.created_at > newdate): #filtering out dates that are not in right time period
 				loc = str(status._json['user']['location'])
-				try:
-					agent = "dataMining" + str(os.getpid())
-					geolocator = Nominatim(user_agent=agent, timeout=3)
-					location = geolocator.geocode(loc)
-				#	print(status.text)
-				#	count += count	
-					statusLocList = [get_tweet_sentiment(status.text), location.latitude,location.longitude, loc]
-					listOfLinks.append(statusLocList)
+				if(loc != "None"):
+					try:
+						agent = "dataMining" + str(os.getpid())
+						geolocator = Nominatim(user_agent=agent, timeout=3)
+						location = geolocator.geocode(loc) #geocoding from received
+						statusLocList = [get_tweet_sentiment(status.text), location.latitude,location.longitude, loc]
+						listOfLinks.append(statusLocList)
 
-				except(AttributeError):
-					pass
-
+					except(AttributeError):
+						pass
 		return listOfLinks # a success
 	except (tweepy.TweepError):
 		return [] #means the username was not valid!
@@ -87,7 +94,7 @@ def get_tweet_sentiment(tweetText):
     else:
     	return 2
 
-def remove_noise(tweet_tokens, stop_words = ()):
+def remove_noise(tweet_tokens, stop_words = ()): #removes noise aka removing @, retweeting people, links
 
     cleaned_tokens = []
 
@@ -127,7 +134,7 @@ def calibrate():
 
     stop_words = stopwords.words('english')
 
-    positive_tweet_tokens = twitter_samples.tokenized('positive_tweets.json')
+    positive_tweet_tokens = twitter_samples.tokenized('positive_tweets.json') #files downloaded from setup.py used to calibrate the classifer for sentiment analysis
     negative_tweet_tokens = twitter_samples.tokenized('negative_tweets.json')
 
     positive_cleaned_tokens_list = []
@@ -147,10 +154,10 @@ def calibrate():
     positive_tokens_for_model = get_tweets_for_model(positive_cleaned_tokens_list)
     negative_tokens_for_model = get_tweets_for_model(negative_cleaned_tokens_list)
 
-    positive_dataset = [(tweet_dict, "Positive")
+    positive_dataset = [(tweet_dict, "Positive") #calibrating positive
                          for tweet_dict in positive_tokens_for_model]
 
-    negative_dataset = [(tweet_dict, "Negative")
+    negative_dataset = [(tweet_dict, "Negative") #calibrating negative
                          for tweet_dict in negative_tokens_for_model]
 
     dataset = positive_dataset + negative_dataset
@@ -161,7 +168,31 @@ def calibrate():
     test_data = dataset[7000:]
     global classifier
 
-    classifier = NaiveBayesClassifier.train(train_data)
+    classifier = NaiveBayesClassifier.train(train_data) #trains the data!
     print("Calibration complete!")
 
     print("Accuracy is:", classify.accuracy(classifier, test_data))
+
+class StdOutListener(tweepy.StreamListener):
+    """ A listener handles tweets that are received from the stream.
+    This is a basic listener that just prints received tweets to stdout.
+    """
+    def on_data(self, data):
+        JSONdata = json.loads(data)
+        # if (JSONdata["coordinates"] != None):
+        #     print(JSONdata["coordinates"])
+        # print(JSONdata.get("user", {}).get("location", {}))
+        try:
+            loc = str(JSONdata.get("user", {}).get("location", {}))
+            if(loc != "None"):
+                agent = "dataMining" + str(os.getpid())
+                geolocator = Nominatim(user_agent=agent, timeout=3)
+                location = geolocator.geocode(loc)
+                statusLocList = [get_tweet_sentiment(str(JSONdata.get("text", {}))), location.latitude,location.longitude, loc]
+                print(statusLocList)
+                return statusLocList
+        except(AttributeError):
+            pass
+
+    def on_error(self, status):
+        print(status)
