@@ -32,7 +32,7 @@ def root():	#delete zip file and excel files
 	os.system("del data.zip")
 
 	searchTerms.calibrate()
-	return render_template('main.html', butOn = 0, loc_cords = [], loc_cords2 = [], search1 ="", search2 ="",)
+	return render_template('main.html', butOn = 0, loc_cords = [], loc_cords2 = [], search = [],)
 
 @application.route('/', methods=['POST']) #creates the flask html route upon button clicks
 def post():
@@ -40,7 +40,7 @@ def post():
 	if request.form['action'] == 'Search': #for search button
 
 		global cords, cords2
-		global sentiment, sentiment2, nextCords2Use, search1, search2
+		global sentiment, sentiment2, nextCords2Use, search
 
 		searchTerm = request.form['searchTerm'] #getting search term
 		timeStr = request.form.get('time') #getting time period
@@ -52,8 +52,7 @@ def post():
 			cords2 = []
 			sentiment = []
 			sentiment2 = []
-			search1 = ""
-			search2 = ""
+			search = []
 
 		#path for excel file
 		reportName = "Export/" + str(searchTerm) + "_" + str(timeStr) + ".xlsx"
@@ -131,7 +130,11 @@ def post():
 
 		workbook.close() #closing excel file
 
-		return render_template('main.html', butOn = 1, loc_cords = (cords), loc_cords2 = (cords2), sent_list = (sentiment), sent_list2 = (sentiment2), search1 = search1, search2 = search2,)
+		#list to hold search terms
+		search = []
+		search.append(search1)
+		search.append(search2)
+		return render_template('main.html', butOn = 1, loc_cords = (cords), loc_cords2 = (cords2), sent_list = (sentiment), sent_list2 = (sentiment2), terms_list = (search),)
 
 	if request.form['action'] == 'Export': #for when export is pressed, send a zip file of all the excel files in the Export folder
 		zipFolder = zipfile.ZipFile('data.zip','w', zipfile.ZIP_DEFLATED) #making the zip and sending it to the user!!!
