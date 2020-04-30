@@ -13,7 +13,7 @@ from nltk import FreqDist, classify, NaiveBayesClassifier
 
 import datetime
 global classifier
-numTweets = 1000
+numTweets = 1000 #num of tweets to get from tweepy
 # datetime object containing current date and time
 
 import re, string, random
@@ -55,16 +55,13 @@ def getMsgs(searchTerm, time):
 
 		for status in tweepy.Cursor(api.search, q=searchTerm).items(numTweets): 
 
-
-			if (status.created_at > newdate):
+			if (status.created_at > newdate): #filtering out dates that are not in right time period
 				loc = str(status._json['user']['location'])
 				try:
 					agent = "dataMining" + str(os.getpid())
 					geolocator = Nominatim(user_agent=agent, timeout=3)
-					location = geolocator.geocode(loc)
-				#	print(status.text)
-				#	count += count	
-					statusLocList = [get_tweet_sentiment(status.text), location.latitude,location.longitude, loc]
+					location = geolocator.geocode(loc) #geocoding from received
+					statusLocList = [get_tweet_sentiment(status.text), location.latitude,location.longitude, loc] #calling sentiment analysis, putting everything into the list
 					listOfLinks.append(statusLocList)
 
 				except(AttributeError):
@@ -87,7 +84,7 @@ def get_tweet_sentiment(tweetText):
     else:
     	return 2
 
-def remove_noise(tweet_tokens, stop_words = ()):
+def remove_noise(tweet_tokens, stop_words = ()): #removes noise aka removing @, retweeting people, links
 
     cleaned_tokens = []
 
@@ -127,7 +124,7 @@ def calibrate():
 
     stop_words = stopwords.words('english')
 
-    positive_tweet_tokens = twitter_samples.tokenized('positive_tweets.json')
+    positive_tweet_tokens = twitter_samples.tokenized('positive_tweets.json') #files downloaded from setup.py used to calibrate the classifer for sentiment analysis
     negative_tweet_tokens = twitter_samples.tokenized('negative_tweets.json')
 
     positive_cleaned_tokens_list = []
@@ -147,10 +144,10 @@ def calibrate():
     positive_tokens_for_model = get_tweets_for_model(positive_cleaned_tokens_list)
     negative_tokens_for_model = get_tweets_for_model(negative_cleaned_tokens_list)
 
-    positive_dataset = [(tweet_dict, "Positive")
+    positive_dataset = [(tweet_dict, "Positive") #calibrating positive
                          for tweet_dict in positive_tokens_for_model]
 
-    negative_dataset = [(tweet_dict, "Negative")
+    negative_dataset = [(tweet_dict, "Negative") #calibrating negative
                          for tweet_dict in negative_tokens_for_model]
 
     dataset = positive_dataset + negative_dataset
@@ -161,7 +158,7 @@ def calibrate():
     test_data = dataset[7000:]
     global classifier
 
-    classifier = NaiveBayesClassifier.train(train_data)
+    classifier = NaiveBayesClassifier.train(train_data) #trains the data!
     print("Calibration complete!")
 
     print("Accuracy is:", classify.accuracy(classifier, test_data))
