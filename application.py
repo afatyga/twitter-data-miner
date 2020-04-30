@@ -32,7 +32,7 @@ def root():	#delete zip file and excel files
 	os.system("del data.zip")
 
 	searchTerms.calibrate()
-	return render_template('main.html', butOn = 0, loc_cords = [], loc_cords2 = [], search = [],)
+	return render_template('main.html', butOn = 0, loc_cords = [], loc_cords2 = [], terms_list = ["",""],)
 
 @application.route('/', methods=['POST']) #creates the flask html route upon button clicks
 def post():
@@ -40,13 +40,13 @@ def post():
 	if request.form['action'] == 'Search': #for search button
 
 		global cords, cords2
-		global sentiment, sentiment2, nextCords2Use, search
+		global sentiment, sentiment2, nextCords2Use, search1, search2
 
 		searchTerm = request.form['searchTerm'] #getting search term
 		timeStr = request.form.get('time') #getting time period
-#		print(timeStr)
+		print(timeStr)
 		overlay = request.form.get('overlay') #whether they want an overlay or not
-#		print(overlay)
+		print(overlay)
 		if (overlay == None): #resets everything if they don't want an overlay
 			cords = []
 			cords2 = []
@@ -130,6 +130,8 @@ def post():
 
 		workbook.close() #closing excel file
 
+		print(cords)
+		print(cords2)
 		#list to hold search terms
 		search = []
 		search.append(search1)
