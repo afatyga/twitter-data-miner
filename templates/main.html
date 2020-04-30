@@ -92,12 +92,20 @@
 <div id="map"></div>
     <script>
      
+
+     //pydata will hold the lists of long and lats from the python file
       var pydata = {{ loc_cords | tojson }};
       var pydata2 = {{ loc_cords2 | tojson }};
 
+      //name of the search term needed to lable markers
+      var term = {{ search1 }};
+      var term2 = "NULL"
+    
+      //feeling will hold a list of values 1-3 that determine the attitude towards the topic
       var feeling = {{sent_list}};
       set_list = [];
       locations = [];
+      term_list = [];
       latTrue =1
       var lat = 0.0
 
@@ -109,12 +117,14 @@
     
       }
 
+      term_list.push(term);
       set_list.push(locations);
 
       //check if there is a second set of data. Will be second set if overlay checked
       locations2 = []
       if (pydata2 != []) {
         var feeling2 = {{sent_list2}};
+        term2 = {{ search2 }};
         for (i = 0; i < pydata2.length; i+= 2) {
           locations2.push({
             lat: parseFloat(pydata2[i]),
@@ -122,6 +132,7 @@
             });
         }
         set_list.push(locations2)
+        term_list.push(term2)
       }
 
     </script>
@@ -136,9 +147,11 @@
           zoom: 3,
           center: {lat: 28.024, lng: 140.887}
         });
+
+      //loop through the sets. If overlay check there will be two mappings. If not check only one
        for (var k = 0; k < set_list.length; k++) {
           temp_feel = feeling;
-
+        
           if (k == 1) {
             temp_feel = feeling2;
           }
@@ -151,21 +164,21 @@
                 origin: new google.maps.Point(0,0), // origin
                 anchor: new google.maps.Point(0, 0) // anchor
             };
-            var term = {{term | tojson}}
-            console.log(term)
-            //console.log( ({{term}}).toString() )
+            
+          
             url = ""
 
+            //marker labels, displays both sentiment and name of search term which they are from
             if (temp_feel[i] == 1) {
-              feel = "Positive"
+              feel = "Positive " + term_list[k]
               url = 'https://maps.google.com/mapfiles/ms/micons/blue.png'
             }
             if (temp_feel[i] == 2){
-              feel = "Neutral"
+              feel = "Neutral " + term_list[k]
               url = 'https://maps.google.com/mapfiles/ms/micons/yellow.png'
             }
             if (temp_feel[i] == 3){ 
-              feel = "Negative"
+              feel = "Negative " + term_list[k]
               url = 'https://maps.google.com/mapfiles/ms/micons/red.png'
             }
             img = ('/static/markers/m' + (temp_feel[i]).toString() + '.png')
@@ -181,7 +194,7 @@
           });
 
           
-          
+          //makes clusters. Calculator determines colors of cluster based on the majority sentiment
           var markerCluster = new MarkerClusterer(map, markers,
               {imagePath: '/static/markers/m',
               calculator: function(markers, numStyles) {
@@ -189,15 +202,15 @@
                 var red = 0;
                 var blue = 0;
                 var yellow = 0;
+
+                //all this does is counts the markers for each sentiment and determine the cluster color based on majority
                 for (var i = 0; i < markers.length; i++) {
                   if (temp_feel[i] == 1) {
-                    blue++;
-               
+                    blue++;        
                   } else if (temp_feel[i] == 2) {
                     yellow++;
                   } else{
-                    red++;
-                   
+                    red++;       
                   }
                 }
                 max = Math.max(blue, yellow, red);
@@ -210,6 +223,7 @@
               }
             });
 
+            //changes text color of cluster based on which set of data cluster is from
             markerCluster.setStyles(markerCluster.getStyles().map(function (style) {
               style.textColor = mark_colors[k];
               return style;

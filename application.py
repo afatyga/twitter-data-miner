@@ -31,7 +31,7 @@ def root():
 	os.system("rm data.zip")
 	os.system("del data.zip")
 	searchTerms.calibrate()
-	return render_template('main.html', butOn = 0, loc_cords = [], loc_cords2 = [], term ="",)
+	return render_template('main.html', butOn = 0, loc_cords = [], loc_cords2 = [], search1 ="", search2 ="",)
 
 @application.route('/', methods=['POST']) #creates the flask html route
 def post():
