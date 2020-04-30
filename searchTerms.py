@@ -15,7 +15,7 @@ from nltk import FreqDist, classify, NaiveBayesClassifier
 import datetime
 global classifier
 
-numTweets = 1000 #num of tweets to get from tweepy
+numTweets = 20 #num of tweets to get from tweepy
 # datetime object containing current date and time
 
 import re, string, random
