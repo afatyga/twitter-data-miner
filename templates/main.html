@@ -41,6 +41,7 @@
         font-weight: bold;
         text-align: center;
     }
+
    
     #map {
     width: 100%;
@@ -78,9 +79,15 @@
 </select>
 &nbsp;&nbsp; 
    <input type="checkbox" id="overlay" name="overlay" value="overlay">
-  <label for="overlay"> Overlay Data</label><br>
+  <label for="overlay"> Overlay Data</label>
+&nbsp;&nbsp; 
+  <label id = "search1" style ="color:black; background-color:white; width:200px"></label>
+  <label id = "search2" style="width:200px"> </label>
+<br> 
 </p>
   <input type="submit" name="action" value="Search">
+
+
 
 </form>
 
@@ -104,6 +111,9 @@
       locations = [];
       var term_list = {{ terms_list | tojson }};
       console.log(term_list)
+      document.getElementById("search1").innerHTML = term_list[0]
+      document.getElementById("search2").innerHTML = term_list[1]
+
       latTrue =1
       var lat = 0.0
 </script>
