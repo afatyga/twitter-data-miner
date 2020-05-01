@@ -31,8 +31,10 @@ A user can hit the export button to download a zip file of excel files of all th
 Sentiment analysis is done by using the python library nltk. Before the web app begins, sentiment analysis is calibrated by using test data from the library. After a tweet is retrieved, a postive or negative sentiment is assigned to the tweet. 
 
 ## Data Grouping
+Data grouping was done by using google maps clustering. Based on distance between the locations of the data points clusters would be made as you zoom in and zoom out on the map. Cluster color was determined by the majority sentiment in the cluster. If you click on a cluster you will zoom in into it and it will split into smaller clusters.
 
 ## Data Overlaying
+To implement data overlaying, a variable was set either one or zero if overlay was checked off. If it was checked off, a copy of the previous data set was preserved into a temporaray list and the new data was fetched. Both lists were then sent to our javascript mapping function which would map both lists seperately. The two seperate groups were differentiated by text color within the clusters as well as all individial markers were labeled with the term search name.
 
 ## Twitter Live Streaming
 Live streaming works by creating a stream listener object with the given search term. The app then streams live tweets until the given live count is reached, and then all of the live tweets are placed on the map as markers in the same way as the other options.
