@@ -35,6 +35,7 @@ Sentiment analysis is done by using the python library nltk. Before the web app 
 ## Data Overlaying
 
 ## Twitter Live Streaming
+Live streaming works by creating a stream listener object with the given search term. The app then streams live tweets until the given live count is reached, and then all of the live tweets are placed on the map as markers in the same way as the other options.
 
 # Roles
 - Alex => making tweepy api request, geocoding, export into an excel spreadsheet, improved sentiment analysis, front end view
