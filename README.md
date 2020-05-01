@@ -14,9 +14,9 @@ Companies want to see how the US views their brand. They may want to compare opi
 
 # Examples
 An example of the map when 2 requests are overlayed using 100 tweets each: <br>
-<img src="overlaying.jpg" height = 450px/> <br> <br>
+<img src="overlaying.JPG" /> <br> <br>
 An example of the map with the request of coronavirus in the last 30 days and using 1000 tweets 
-<img src="coronavirus_30days_1000.JPG" width= 300px height = 450px/> <br> <br>
+<img src="coronavirus_30days_1000.JPG" /> <br> <br>
 
 
 
