@@ -12,8 +12,16 @@ Companies want to see how the US views their brand. They may want to compare opi
 - Then run python3 application.py
 - Go into your web browser and go onto 127.0.0.1:5000
 
+# Examples
+An example of the map when 2 requests are overlayed using 100 tweets each: <br>
+<img src="overlaying.jpg" height = 450px/> <br> <br>
+An example of the map with the request of coronavirus in the last 30 days and using 1000 tweets 
+<img src="coronavirus_30days_1000.JPG" width= 300px height = 450px/> <br> <br>
+
+
+
 # How Did We Do It?
-We started by making a python script using Tweepy that can take in a search term and return a list of tweets then we looked into getting the location of these tweets. The status and location (longitude and latitude) were grouped together into a list of lists that then could undergo sentiment analysis. After this simple python script was started, we then created a simple web application so that we can enter a location on the web app. Then we added in a drop down list so users can ask for the last day, 30 days, year or live update of tweets to be searched through and sent this to the python script so it could filter out tweets that were too old. 
+We started by making a python script using Tweepy that can take in a search term and return a list of tweets then we looked into getting the location of these tweets. The status and location (longitude and latitude) were grouped together into a list of lists that then could undergo sentiment analysis. After this simple python script was started, we then created a simple web application so that we can enter a location on the web app. Then we added in a drop down list so users can ask for the last day, 30 days, year or live update of tweets to be searched through and sent this to the python script so it could filter out tweets that were too old. Many lists are returned that the map adds
 
 ## Front End Requests
 
