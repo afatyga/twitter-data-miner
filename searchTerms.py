@@ -20,13 +20,17 @@ numTweets = 1000 #num of tweets to get from tweepy
 
 import re, string, random
 
-def getLiveMsgs(searchTerm):
-    l = StdOutListener()
-    auth = tweepy.OAuthHandler(keys.consumer_key, keys.consumer_secret)
-    auth.set_access_token(keys.access_token, keys.access_secret)
+liveLimit = 15
+liveList = []
 
-    stream = tweepy.Stream(auth, l)
-    stream.filter(track=[searchTerm])
+def getLiveMsgs(searchTerm):
+	l = StdOutListener()
+	auth = tweepy.OAuthHandler(keys.consumer_key, keys.consumer_secret)
+	auth.set_access_token(keys.access_token, keys.access_secret)
+
+	stream = tweepy.Stream(auth, l)
+	stream.filter(track=[searchTerm])
+	return liveList
 
 def getMsgs(searchTerm, time):
 	if not isinstance(searchTerm,str): #can only take in a string
@@ -174,25 +178,31 @@ def calibrate():
     print("Accuracy is:", classify.accuracy(classifier, test_data))
 
 class StdOutListener(tweepy.StreamListener):
-    """ A listener handles tweets that are received from the stream.
-    This is a basic listener that just prints received tweets to stdout.
-    """
-    def on_data(self, data):
-        JSONdata = json.loads(data)
-        # if (JSONdata["coordinates"] != None):
-        #     print(JSONdata["coordinates"])
-        # print(JSONdata.get("user", {}).get("location", {}))
-        try:
-            loc = str(JSONdata.get("user", {}).get("location", {}))
-            if(loc != "None"):
-                agent = "dataMining" + str(os.getpid())
-                geolocator = Nominatim(user_agent=agent, timeout=3)
-                location = geolocator.geocode(loc)
-                statusLocList = [get_tweet_sentiment(str(JSONdata.get("text", {}))), location.latitude,location.longitude, loc]
-                print(statusLocList)
-                return statusLocList
-        except(AttributeError):
-            pass
+	def __init__(self, tweetCounter=0):
+		self.tweetCounter = tweetCounter
 
-    def on_error(self, status):
-        print(status)
+	def on_data(self, data):
+		JSONdata = json.loads(data)
+		# if (JSONdata["coordinates"] != None):
+		#     print(JSONdata["coordinates"])
+		# print(JSONdata.get("user", {}).get("location", {}))
+		try:
+			loc = str(JSONdata.get("user", {}).get("location", {}))
+			if(loc != "None"):
+				agent = "dataMining" + str(os.getpid())
+				geolocator = Nominatim(user_agent=agent, timeout=10)
+				location = geolocator.geocode(loc)
+				# sentimentList.append(get_tweet_sentiment(str(JSONdata.get("text", {}))))
+				# coordsList.append(location.latitude)
+				# coordsList.append(location.longitude)
+				liveList.append([get_tweet_sentiment(str(JSONdata.get("text", {}))), location.latitude,location.longitude, loc])
+				self.tweetCounter += 1
+				if(self.tweetCounter == liveLimit):
+					return False
+				else:
+					return True
+		except(AttributeError):
+			pass
+
+	def on_error(self, status):
+		print(status)

@@ -77,7 +77,6 @@ def post():
 			terms = searchTerms.getMsgs(searchTerm, time)
 		elif(timeStr == "live"): #justin here is where you call the function 
 			terms = searchTerms.getLiveMsgs(searchTerm)
-			print("AH")
 
 		rowNum = 1
 
