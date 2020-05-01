@@ -19,13 +19,16 @@ An example of the map with the request of coronavirus in the last 30 days and us
 <img src="coronavirus_30days_1000.JPG" /> <br> <br>
 
 
-
 # How Did We Do It?
 We started by making a python script using Tweepy that can take in a search term and return a list of tweets then we looked into getting the location of these tweets. The status and location (longitude and latitude) were grouped together into a list of lists that then could undergo sentiment analysis. After this simple python script was started, we then created a simple web application so that we can enter a location on the web app. Then we added in a drop down list so users can ask for the last day, 30 days, year or live update of tweets to be searched through and sent this to the python script so it could filter out tweets that were too old. Many lists are returned that the map adds
 
 ## Front End Requests
+The user enters a search term, length of time and hits the submit button. 1000 tweets are retrieved and the date of them is checked to make sure they fit the time criteria. Sentiment analysis is called on the text of each and positive or negative is assigned. The location of the tweet runs through a geolocator to get an exact latitude and longitude. The longitude, latitude, actual location, and sentiment are put into a list and added to the overall list of lists. This list of lists is returned and is broken down to write to the excel file properly and send the correct information to the front end.
+<br>
+A user can hit the export button to download a zip file of excel files of all their requests to receive further information.
 
 ## Sentiment Analysis
+Sentiment analysis is done by using the python library nltk. Before the web app begins, sentiment analysis is calibrated by using test data from the library. After a tweet is retrieved, a postive or negative sentiment is assigned to the tweet. 
 
 ## Data Grouping
 
@@ -33,11 +36,8 @@ We started by making a python script using Tweepy that can take in a search term
 
 ## Twitter Live Streaming
 
-# Completed Work
-Basic Web App to allow users to input a search term and decide how far back twitter will go (past day, past 30 days, past year). Sentiment analysis is run on these tweets and the latitude and longitude is determined using geolocation. Users can also export an excel file of this data. Separately, we were able to create a map that groups data points together with various different colored markers. Our next step is to put these 2 parts together.
-
 # Roles
-- Alex => making tweepy api request, geocoding, export output into an excel spreadsheet, improved sentiment analysis, front end view
+- Alex => making tweepy api request, geocoding, export into an excel spreadsheet, improved sentiment analysis, front end view
 - Justin => Sentiment analysis, live tweepy streaming
 - Noah => Placing data points onto the map, grouping these data points together, data overlaying, front end map
 
