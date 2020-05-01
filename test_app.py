@@ -1,3 +1,4 @@
+import setup
 import searchTerms
 
 def test_getmsg():
