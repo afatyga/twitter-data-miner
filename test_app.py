@@ -1,6 +1,8 @@
 import setup
 import searchTerms
 
+searchTerms.calibrate()
+
 def test_getmsg():
     assert searchTerms.getMsgs("covid", 1) == [[3, 40.7127281, -74.0060152, 'New York City, NY'], [3, 40.7127281, -74.0060152, 'New York City, NY']
 [40.7127281, -74.0060152, 40.7127281, -74.0060152]]
